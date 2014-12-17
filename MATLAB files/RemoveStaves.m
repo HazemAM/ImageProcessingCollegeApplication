@@ -9,14 +9,8 @@ function [newImg,xStart,xEnd] = RemoveStaves(img)
     [m,n] = size(img);
     
     %Making projection:
-    gram = uint32(zeros(m,1));
-    for i = 1:m
-       for j = 1:n
-          if img(i,j)==0 %old yaw: <=200
-             gram(i) = gram(i)+1;
-          end
-       end
-    end
+    gram = sum(img,2) ;
+    
     
     %Applying:
     peakMax = max(max(gram));
