@@ -9,9 +9,8 @@ function labels  = Classify( img )
 imagefiles = dir('*.BMP');
 nfiles = 6; 
 nClass=6;
-padSize=150;
-padSizey=50;
-images=zeros(nfiles,padSize*padSizey);
+padSize=200;
+images=zeros(nfiles,padSize*padSize);
 
 for i = 1:nfiles
     currentfilename = imagefiles(i).name;
@@ -20,10 +19,10 @@ for i = 1:nfiles
     temp = rgb2gray(temp);
     temp=im2bw(temp);
     temp=imcomplement(temp);
-%     s1=size(temp,1);
-%     s2=size(temp,2);
-%     temp=padarray(temp,[padSize-s1 padSize-s2],'post');
-    temp = imresize(temp,[padSize padSizey]);
+    s1=size(temp,1);
+    s2=size(temp,2);
+    temp=padarray(temp,[(roundpadSize-s1)/2 (padSize-s2)/2],'both');
+    %temp = imresize(temp,[50 50]);
     imshow(temp)
     images(i,:) = temp(:)';
 end
@@ -58,10 +57,10 @@ for i=1:len
     temp = im2double(img(i).Image);
     %temp=imcomplement(temp);
     %imshow(temp)
-    temp = imresize(temp,[padSize padSizey]);
-%     s1=size(temp,1);
-%     s2=size(temp,2);
-%     temp=padarray(temp,[padSize-s1 padSize-s2],'post');
+    %temp = imresize(temp,[50 50]);
+    s1=size(temp,1);
+    s2=size(temp,2);
+    temp=padarray(temp,[(padSize-s1)/2 (padSize-s2)/2],'both');
     imshow(temp);
     tem = temp(:)';
     for j = 1:nClass;
