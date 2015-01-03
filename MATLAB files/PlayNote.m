@@ -17,13 +17,13 @@ function [] = PlayNote(note, duration)
     end
 
     %% Mapping:
-    notecreate = @(frq,dur) sin(2*pi* (1:dur)/8192 * (440*2 .^ ((frq-1)/12))); %square or cos/sin
+    notecreate = @(frq,dur) square(2*pi* (1:dur)/8192 * (440*2 .^ ((frq-1)/12))); %square or cos/sin
     notenames = {'A' 'A#' 'B' 'C' 'C#' 'D' 'D#' 'E' 'F' 'F#' 'G' 'G#'};
 
     for k1 = 1:length(note)
         idx = strcmp(note(k1), notenames);
         songidx(k1) = find(idx);
-    end    
+    end
 
     %% Playing:
     %dur = 0.3*duration;

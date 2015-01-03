@@ -9,7 +9,7 @@ function [] = PlaySong(song, durations)
     [~, durts] = size(durations);
     
     %Size checking:
-    if(notes~=durts)
+    if notes ~= durts
        error('Length differs.');
     end
     
@@ -17,7 +17,9 @@ function [] = PlaySong(song, durations)
     secondsPerNote = 1;
     noteSeparator = 0.1;
     for i=1:notes
-        PlayNote(song(i), durations(i));
+        if song(i) ~= '|'   %If '|' (bar), just pause, don't play anything.
+            PlayNote(song(i), durations(i));
+        end
         pause( (1/durations(i)) * secondsPerNote + noteSeparator );
     end
 

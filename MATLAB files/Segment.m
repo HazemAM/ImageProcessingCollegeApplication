@@ -1,4 +1,4 @@
-function [Segments, NumSegments] = Segment(img)
+function [segments, NumObjects] = Segment(img)
     %h = fspecial('average', [1,4]);
     %filtered=imfilter(img,h);
     %imshow(filtered);
@@ -42,19 +42,76 @@ function [Segments, NumSegments] = Segment(img)
     
     
     %% Separating notes in each block:
-    block1 = img(point(1):point(2),:);
+    %%Block:
+    blockIndex = 1;
+    block = zeros(size(img));
     
-    CC = bwconncomp(block1);
-    NumSegments = CC.NumObjects;
-    Segments = regionprops(CC, 'image');
+    staffNum = (blockIndex-1) * staffSections * 5 + 1;   %The position to start getting staff poistions of cuurrent block.
+    blockStaffs = staffStarts(staffNum : staffNum+4); %Staff positions of current block.
     
-    for i=1:NumSegments
-       seg = imcomplement(Segments(i).Image);
-       [n,m] = size(seg);
-       
-       if n>5 || m>5
-           figure, imshow(seg);
-       end
+    if(staffSections == 2)
+        dualSectionStaffNum = 5 * staffSections * blockIndex - 5; %The position between two sections in a dual-section block.
+        sectionEnd = (staffStarts(dualSectionStaffNum) + staffStarts(dualSectionStaffNum+1)) / 2; %Calculating The block end by removing the second section.
+    else
+        sectionEnd = point(blockIndex+1); %If not-dual-section, then just get the block end point.
     end
+    
+    block(point(blockIndex):sectionEnd, :) = img(point(blockIndex):sectionEnd, :); %Getting the block as an image.
+    
+    
+    
+    CC = bwconncomp(block);
+    NumObjects = CC.NumObjects;
+    segments = regionprops(CC, 'Image', 'PixelList');
+    
+    %figure(3), imshow(block);
+    
+    
+    %%Notes:
+    for i=1:NumObjects
+        position = min(segments(i).PixelList); %The upper-left coords for this component.
+        y = position(2);
+        segImg = segments(i).Image;
+
+        %Frequency:
+        staffHeight = blockStaffs(2)-blockStaffs(1);
+        Epos = (blockStaffs(1) + blockStaffs(2)) / 2;
+        Cpos = (blockStaffs(2) + blockStaffs(3)) / 2;
+        Gpos = (blockStaffs(1) - staffHeight/2);
+        Apos = (blockStaffs(1) - staffHeight);
+        
+        sError  = 2; %Error value for the position of a note from staff lines.
+        minSize = 5; %If smaller than this value (in both width height), considered noise.
+
+        segSize = size(segImg);
+        if segSize(1)>minSize || segSize(2)>minSize
+            figure(2), imshow(segImg);
+            
+            if(y<=Apos+sError && y>=Apos-sError)
+                display('A');
+            elseif(y<=Gpos+sError && y>=Gpos-sError)
+                display('G');
+            elseif(y<=blockStaffs(1)+sError && y>=blockStaffs(1)-sError)
+                display('F');
+            elseif(y<=Epos+sError && y>=Epos-sError)
+                display('E');
+            elseif(y<=blockStaffs(2)+sError && y>=blockStaffs(2)-sError)
+                display('D');
+            elseif(y<=Cpos+sError && y>=Cpos-sError)
+                display('C');
+            end
+        end
+        
+    end
+    
+    %for i=1:NumSegments
+    %   seg = imcomplement(segments(i).Image);
+    %   
+    %   imSize = size(seg);
+    %  
+    %   if imSize(1)>5 || imSize(2)>5
+    %       imshow(seg);
+    %   end
+    %end
 
 end
