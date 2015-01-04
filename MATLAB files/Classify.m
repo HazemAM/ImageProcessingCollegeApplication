@@ -7,8 +7,8 @@ function labels  = Classify( img )
 %             %imageSet(fullfile(rootFolder, '16')) ];
 % minSetCount = min([imgSets.Count]); % determine the smallest amount of images in a category
 imagefiles = dir('*.BMP');
-nfiles = 11; 
-nClass=6;
+nfiles = 18; 
+nClass=7;
 padSize=150;
 padSizey=50;
 images=zeros(nfiles,padSize*padSizey);
@@ -24,12 +24,12 @@ for i = 1:nfiles
 %     s2=size(temp,2);
 %     temp=padarray(temp,[padSize-s1 padSize-s2],'post');
     temp = imresize(temp,[padSize padSizey]);
-    %imshow(temp)
+   imshow(temp)
     images(i,:) = temp(:)';
 end
 
 SVMModels = cell(6,1);
-Y=['1'; '2' ;'2' ;'4' ;'4' ;'b' ;'b' ;'f' ;'f' ;'f' ;'g' ];
+Y=['1';'1';'1'; '2' ;'2' ;'4' ;'4' ;'b' ;'b' ;'c' ;'c' ;'c' ;'f' ;'f' ;'f' ;'g';'g';'g' ];
 classes = unique(Y);
 rng(1); % For reproducibility
 
@@ -69,8 +69,11 @@ for i=1:len
         lb(j) = svmclassify(SVMModels{j},tem);
     end
 % Display the string label
-[~,in]=max(lb);
-labels(i)=char(classes(in));
+[v,in]=max(lb);
+if(v==0)
+    labels(i)='n';
+else
+    labels(i)=char(classes(in));
 end
 
 end
