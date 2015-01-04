@@ -7,7 +7,7 @@ function labels  = Classify( img )
 %             %imageSet(fullfile(rootFolder, '16')) ];
 % minSetCount = min([imgSets.Count]); % determine the smallest amount of images in a category
 imagefiles = dir('*.BMP');
-nfiles = 6; 
+nfiles = 11; 
 nClass=6;
 padSize=150;
 padSizey=50;
@@ -24,19 +24,20 @@ for i = 1:nfiles
 %     s2=size(temp,2);
 %     temp=padarray(temp,[padSize-s1 padSize-s2],'post');
     temp = imresize(temp,[padSize padSizey]);
-    imshow(temp)
+    %imshow(temp)
     images(i,:) = temp(:)';
 end
 
 SVMModels = cell(6,1);
-Y=['1'; '2' ;'4' ;'b' ;'g' ;'s' ];
+Y=['1'; '2' ;'2' ;'4' ;'4' ;'b' ;'b' ;'f' ;'f' ;'f' ;'g' ];
+classes = unique(Y);
 rng(1); % For reproducibility
 
 for j = 1:nClass
-    indx=zeros(6,1);
+    indx=zeros(nfiles,1);
     %indx = strcmp(Y(j),Y); % Create binary classes for each classifier
-    for k=1:nClass
-        indx(k) = strcmp(Y(j),Y(k)); % Create binary classes for each classifier
+    for k=1:nfiles
+        indx(k) = strcmp(Y(k),classes(j)); % Create binary classes for each classifier
     end
     SVMModels{j} = svmtrain(images,indx);
 end
@@ -62,14 +63,14 @@ for i=1:len
 %     s1=size(temp,1);
 %     s2=size(temp,2);
 %     temp=padarray(temp,[padSize-s1 padSize-s2],'post');
-    imshow(temp);
+    %imshow(temp);
     tem = temp(:)';
     for j = 1:nClass;
         lb(j) = svmclassify(SVMModels{j},tem);
     end
 % Display the string label
 [~,in]=max(lb);
-labels(i)=char(Y(in));
+labels(i)=char(classes(in));
 end
 
 end
