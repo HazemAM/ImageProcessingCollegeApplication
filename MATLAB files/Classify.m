@@ -14,7 +14,7 @@ for i = 1:nfiles
     temp=im2bw(temp);
     temp=imcomplement(temp);
     temp = imresize(temp,[padSize padSizey]); %resizing image to match with given input
-   imshow(temp)
+   %imshow(temp)
     images(i,:) = temp(:)';
 end
 

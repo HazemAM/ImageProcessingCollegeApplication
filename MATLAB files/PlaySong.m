@@ -1,8 +1,8 @@
 function [] = PlaySong(song, durations)
     %% Inits.
     %Converting:
-    song = cell2mat(song);
-    durations = cell2mat(durations);
+    %song = cell2mat(song);
+    %durations = cell2mat(durations);
     
     %Getting size:
     [~, notes] = size(song);
@@ -16,11 +16,14 @@ function [] = PlaySong(song, durations)
     %% Play
     secondsPerNote = 1;
     noteSeparator = 0.1;
+    
     for i=1:notes
         if song(i) ~= '|'   %If '|' (bar), just pause, don't play anything.
             PlayNote(song(i), durations(i));
         end
-        pause( (1/durations(i)) * secondsPerNote + noteSeparator );
+        
+        pauseDuration = ((1/durations(i)) * secondsPerNote) + noteSeparator;
+        pause(pauseDuration);
     end
 
 end
