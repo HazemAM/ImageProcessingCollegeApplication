@@ -1,11 +1,4 @@
 function labels  = Classify( img )
-%rootFolder = 'Set';
-% imgSets = [ imageSet(fullfile(rootFolder, '1')), ...
-%             imageSet(fullfile(rootFolder, '2')), ...
-%             imageSet(fullfile(rootFolder, '4'))];%, ...
-%             %imageSet(fullfile(rootFolder, '8')), ...
-%             %imageSet(fullfile(rootFolder, '16')) ];
-% minSetCount = min([imgSets.Count]); % determine the smallest amount of images in a category
 imagefiles = dir('*.BMP');
 nfiles = 18; 
 nClass=7;
@@ -20,14 +13,12 @@ for i = 1:nfiles
     temp = rgb2gray(temp);
     temp=im2bw(temp);
     temp=imcomplement(temp);
-%     s1=size(temp,1);
-%     s2=size(temp,2);
-%     temp=padarray(temp,[padSize-s1 padSize-s2],'post');
-    temp = imresize(temp,[padSize padSizey]);
+    temp = imresize(temp,[padSize padSizey]); %resizing image to match with given input
    imshow(temp)
     images(i,:) = temp(:)';
 end
 
+%training
 SVMModels = cell(6,1);
 Y=['1';'1';'1'; '2' ;'2' ;'4' ;'4' ;'b' ;'b' ;'c' ;'c' ;'c' ;'f' ;'f' ;'f' ;'g';'g';'g' ];
 classes = unique(Y);
@@ -41,28 +32,15 @@ for j = 1:nClass
     end
     SVMModels{j} = svmtrain(images,indx);
 end
-% Use partition method to trim the set.
 
-% Notice that each set now has exactly the same number of images.
-%[trainingSets]=imgSets;%, validationSets] = partition(imgSets, 0.3, 'randomize');
-%bag = bagOfFeatures(images);
-%categoryClassifier = trainImageCategoryClassifier(images, bag);
- %confMatrix = evaluate(categoryClassifier, trainingSets);
- %confMatrix = evaluate(categoryClassifier, validationSets);
-% % Compute average accuracy
- %mean(diag(confMatrix));
-len=size(img,1);
-labels=char(zeros(len,1));
 
-for i=1:len
+
+
+
     lb=zeros(nClass,1);
-    temp = im2double(img(i).Image);
-    %temp=imcomplement(temp);
+    temp = im2double(img);
     %imshow(temp)
     temp = imresize(temp,[padSize padSizey]);
-%     s1=size(temp,1);
-%     s2=size(temp,2);
-%     temp=padarray(temp,[padSize-s1 padSize-s2],'post');
     %imshow(temp);
     tem = temp(:)';
     for j = 1:nClass;
@@ -71,9 +49,9 @@ for i=1:len
 % Display the string label
 [v,in]=max(lb);
 if(v==0)
-    labels(i)='n';
+    labels='n';
 else
-    labels(i)=char(classes(in));
+    labels=char(classes(in));
 end
 
 end
