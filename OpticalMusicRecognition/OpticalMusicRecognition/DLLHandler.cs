@@ -19,6 +19,10 @@ namespace OMRLink
         public void PlaySheet(Bitmap inp)
         {
             double[][,] im = getArr(inp);
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < inp.Width; j++)
+                    for (int k = 0; k < inp.Height; k++)
+                        im[0][j, k] = (im[0][j, k] + im[1][j, k] + im[2][j, k]) / 3.0;
             OMRHandler.OMR((MWNumericArray)im[0]);
 
             // Create the MATLAB instance 
