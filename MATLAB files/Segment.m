@@ -80,8 +80,8 @@ function [segments, NumObjects] = Segment(img)
         Gpos = (blockStaffs(1) - staffHeight/2);
         Apos = (blockStaffs(1) - staffHeight);
         
-        sError  = 2; %Error value for the position of a note from staff lines.
-        minSize = 5; %If smaller than this value (in both width height), considered noise.
+        sError  = 2;    %Error value for the position of a note from staff lines.
+        minSize = 5;    %If smaller than this value (in both width height), considered noise.
 
         segSize = size(segImg);
         if segSize(1)>minSize || segSize(2)>minSize

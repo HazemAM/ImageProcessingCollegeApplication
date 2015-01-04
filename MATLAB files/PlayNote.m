@@ -17,8 +17,8 @@ function [] = PlayNote(note, duration)
     end
 
     %% Mapping:
-    notecreate = @(frq,dur) square(2*pi* (1:dur)/8192 * (440*2 .^ ((frq-1)/12))); %square or cos/sin
-    notenames = {'A' 'A#' 'B' 'C' 'C#' 'D' 'D#' 'E' 'F' 'F#' 'G' 'G#'};
+    notecreate = @(frq,dur) square(2*pi* (1:dur)/8192 * (523.25*2 .^ ((frq-1)/12))); %square or cos/sin
+    notenames = {'C' 'C#' 'D' 'D#' 'E' 'F' 'F#' 'G' 'G#' 'A' 'A#' 'B'};
 
     for k1 = 1:length(note)
         idx = strcmp(note(k1), notenames);
